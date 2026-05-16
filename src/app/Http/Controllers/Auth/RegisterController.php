@@ -5,11 +5,10 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use App\Models\User;
+use App\Http\Requests\UserCreateRequest; // ▼ 追加：カスタムフォームリクエストのインポート
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
 
 class RegisterController extends Controller
 {
@@ -27,14 +26,14 @@ class RegisterController extends Controller
     use RegistersUsers;
 
     /**
-     * Where to redirect users after registration.
+     * 登録後のリダイレクト先遷移パス
      *
      * @var string
      */
     protected $redirectTo = RouteServiceProvider::HOME;
 
     /**
-     * Create a new controller instance.
+     * 新しいコントローラーインスタンスの生成
      *
      * @return void
      */
@@ -44,24 +43,23 @@ class RegisterController extends Controller
     }
 
     /**
-     * Get a validator for an incoming registration request.
+     * ユーザー新規登録処理を行い、投稿画面へ遷移する
      *
-     * @param  array  $data
-     * @return \Illuminate\Contracts\Validation\Validator
-     */
-    /**
-     * ユーザー登録後、投稿画面に遷移する
-     * @param Request $request
+     * @param UserCreateRequest $request // ▼ 変更：通常の Request から UserCreateRequest に書き換え
      * @return RedirectResponse
      */
-    public function register(Request $request)
+    public function register(UserCreateRequest $request)
     {
+        // ※ $request->validate() の処理ブロックは FormRequest に移行したため削除しました。
+
+        // ユーザー情報をデータベースに保存
         User::create([
             'name'     => $request->name,
             'email'    => $request->email,
             'password' => Hash::make($request->password),
         ]);
 
+        // メモ一覧画面へリダイレクト
         return redirect()->route('memo.index');
     }
 }
