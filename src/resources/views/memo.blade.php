@@ -4,15 +4,14 @@
 @section('content')
 <div class="h-100 bg-white">
     <div class="row h-100 m-0 p-0">
-        <!-- 左側：メモ一覧エリア -->
         <div class="col-3 h-100 m-0 p-0 border-left border-right border-gray">
             <div class="left-memo-menu d-flex justify-content-between pt-2">
                 <div class="pl-3 pt-2">
                     xxxさん、こんにちは。
                 </div>
                 <div class="pr-1">
-                    <a href="" class="btn btn-success"><i class="fas fa-plus"></i></a>
-                    <a href="{{ route('login.index') }}" class="btn btn-dark"><i class="fas fa-sign-out-alt"></i></a>
+                    <a href="{{ route('memo.add') }}" class="btn btn-success"><i class="fas fa-plus"></i></a>
+                    <a href="{{ route('login') }}" class="btn btn-dark"><i class="fas fa-sign-out-alt"></i></a>
                 </div>
             </div>
             <div class="left-memo-title h3 pl-3 pt-3">
@@ -31,7 +30,6 @@
             </div>
         </div>
 
-        <!-- 右側：メモ編集エリア -->
         <div class="col-9 h-100">
             <form class="w-100 h-100" method="post">
                 <input type="hidden" name="edit_id" value="" />

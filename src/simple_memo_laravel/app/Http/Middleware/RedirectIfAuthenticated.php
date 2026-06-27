@@ -10,20 +10,23 @@ use Illuminate\Support\Facades\Auth;
 class RedirectIfAuthenticated
 {
     /**
-     * Handle an incoming request.
+     * 受信リクエストを処理します。
+     * ログイン済みのユーザーが「guest」向けの画面（ログイン・新規登録）にアクセスした場合、/memo へリダイレクトします。
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
+     * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
      * @param  string|null  ...$guards
-     * @return mixed
+     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
     public function handle(Request $request, Closure $next, ...$guards)
     {
         $guards = empty($guards) ? [null] : $guards;
 
         foreach ($guards as $guard) {
+            // ユーザーが既にログインしているかどうかをチェック
             if (Auth::guard($guard)->check()) {
-                return redirect(RouteServiceProvider::HOME);
+                // ログイン済みであれば、デフォルトのHOMEではなく、メモ投稿画面（/memo）へ強制リダイレクト
+                return redirect('/memo');
             }
         }
 
