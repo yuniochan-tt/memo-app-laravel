@@ -23,19 +23,21 @@ class LoginController extends Controller
     use AuthenticatesUsers;
 
     /**
-     * 認証成功後のリダイレクト先遷移パス
+     * Where to redirect users after login.
      *
      * @var string
      */
     protected $redirectTo = '/memo'; 
 
     /**
-     * ログイン時のバリデーション（トレイトのメソッドをオーバーライド）
-     * * @param Request $request
+     * Validate the user login request.
+     *
+     * @param Request $request
+     * @return void
      */
     protected function validateLogin(Request $request)
     {
-        // ログインバリデーション実行前に言語設定を日本語に強制する
+        // Force Japanese locale before executing validation
         app()->setLocale('ja');
 
         $request->validate(
@@ -50,12 +52,28 @@ class LoginController extends Controller
     }
 
     /**
-     * 新しいコントローラーインスタンスの生成
+     * Create a new controller instance.
      *
      * @return void
      */
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
+    }
+
+    /**
+     * Handle the user response after logging out.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    protected function loggedOut(Request $request)
+    {
+        // Invalidate session and regenerate CSRF token to prevent redirect loops
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        // Redirect directly to the login URL
+        return redirect('/');
     }
 }

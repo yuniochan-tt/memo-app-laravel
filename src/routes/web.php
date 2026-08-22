@@ -12,16 +12,20 @@ use App\Http\Controllers\Auth\RegisterController;
 |--------------------------------------------------------------------------
 */
 
+// Authentication and registration views
 Route::get('/', [LoginController::class, 'showLoginForm'])->name('login.index');
 Route::get('/user', [RegisterController::class, 'showRegistrationForm'])->name('user.register');
-Route::post('/user/register', [RegisterController::class, 'register'])->name('user.exec.register');
+Route::post('/user/register', [RegisterController::class, 'register'])->name('register');
 
-// authグループ内を修正
+// Authenticated routes group
 Route::group(['middleware' => ['auth']], function() {
     Route::get('/memo', [MemoController::class, 'index'])->name('memo.index');
-    
-    // 8. メモ追加用ルートを追加
     Route::get('/memo/add', [MemoController::class, 'add'])->name('memo.add');
+    Route::post('/memo/update', [MemoController::class, 'update'])->name('memo.update');
+    
+    // Route for deleting a memo
+    Route::post('/memo/delete', [MemoController::class, 'delete'])->name('memo.delete');
 });
 
-Auth::routes();
+// Register Laravel authentication routes except standard register (prevents route conflicts)
+Auth::routes(['register' => false]);
